@@ -17,7 +17,11 @@ export class HtmlLoader {
             },
         });
 
-        const hostUrl: string = url.indexOf('?') !== -1 ? url.substring(0, url.indexOf('?')) : url;
+        let hostUrl: string = url.indexOf('?') !== -1 ? url.substring(0, url.indexOf('?')) : url;
+
+        if(hostUrl.split("/").length - 1==4){
+            hostUrl = hostUrl.substring(0, hostUrl.lastIndexOf('/'))
+        }
 
         return {
             html,

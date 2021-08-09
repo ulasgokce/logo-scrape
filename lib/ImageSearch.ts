@@ -33,22 +33,28 @@ export class ImageSearch {
                     return { type: 'json-ld-logo', url: Helpers.findJsonLdImages($(el).html()) };
                 })
                 .get(),
-            { type: 'img-alt/logo', url: $('img[alt*="logo"]').attr('src') },
-            { type: 'img-alt/logo-class', url: $('img[class*="logo"]').attr('src') },
-            { type: 'img-src/logo', url: $('img[src*="logo"]').attr('src') },
-            { type: 'og:image', url: $('meta[property="og:image"]').attr('content') },
+                { type: 'img-alt/logo', url: $('img[alt*="logo"]').attr('src') },
+                { type: 'img-alt/logo', url: $('img[alt*="Logo"]').attr('src') },
+                { type: 'img-alt/logo', url: $('img[alt*="LOGO"]').attr('src') },
+                { type: 'img-src/logo', url: $('img[src*="logo"]').attr('src') },
+                { type: 'img-src/logo', url: $('img[src*="Logo"]').attr('src') },
+                { type: 'img-src/logo', url: $('img[src*="LOGO"]').attr('src') },
+                { type: 'img-alt/logo-class', url: $('img[class*="logo"]').attr('src') },
+                { type: 'img/logo-class-div', url: $('div[class*="logo"] img').attr('src') },
+                { type: 'img/logo-class-a', url: $('a[class*="logo"] img').attr('src') },
+                { type: 'img-id/logo-id', url: $('img[id*="logo"]').attr('src') },
+                { type: 'og:image', url: $('meta[property="og:image"]').attr('content') },
             { type: 'svg:image', data: true, url: Helpers.svgToDataURL($('a[class*="logo"]').html()) },
         ].filter(e => e.url);
 
         const correctLogos: ImageData[] = logos.map((image: any) => {
-            return !Helpers.validUrl(image.url) && image.url.indexOf('data:') === -1
+            return !Helpers.validUrl(image.url) && image.url.indexOf('data:') === -1 && !image.url.startsWith('data:')
                 ? {
-                      ...image,
-                      url: response.url + image.url,
-                  }
-                : image;
+                    ...image,
+                    url: image.url.startsWith('/') ? response.url +image.url :response.url + '/'+ image.url
+                }
+                : image.url.startsWith('data:') ? null : image;
         });
-
         if (showAllImages) {
             return correctLogos;
         } else {
